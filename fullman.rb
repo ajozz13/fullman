@@ -72,7 +72,9 @@ class ShipmentLine
   def to_s
     #forces value to the ceil
     #We will only produce type = 12
-    @shipment.description = "\"#{@shipment.description}\"" if @shipment.description.include? ","
+    unless @shipment.description.nil?
+      @shipment.description = "\"#{@shipment.description}\"" if @shipment.description.include? ","
+    end
     str = "12,,#{ @shipment.hawb },#{ @shipper.reference },#{ @shipment.second_shipper_reference },#{ @shipment.vendor_reference }"
     str = "#{str},#{ shipment.origin },#{ @shipment.destination },,#{ @shipment.service_provider },,"
     str = "#{str},#{ @shipment.pieces },#{ @shipment.weight },#{ @shipment.weight_unit },#{ @shipment.contents }"
