@@ -1,0 +1,76 @@
+# Simple file with the reference numbers to create the extraction from the file
+# specified.
+
+# file  (required) this tag is to define the input path of the CSV
+# You can use date wild cards to define the file
+# headers  (required) defined if the input file has headers (true) or not (false)
+
+# emails section (optional)
+# You have two options  aams  and notices
+#   aams - is the production level email assigned by IBC
+#   The following labels are available
+#   success, failure - use a comma separated list where the AAMS notices will be sent to
+
+# manifest section (optional)
+# The following labels are available
+#   id, date, origin, destination, flight, master
+
+# shipper and consignee sections (required)
+# The following headers are available for shipper and consignee objects.
+#   name, company, address1, address2, city, state, zip, country, phone, email,
+#   tax_id, account, reference
+
+# shipment section (required)
+# The following headers are avialable for shipment objects
+#    hawb, vendor_reference, origin, destination, service_provider, pieces,
+#    weight, weight_unit, contents, currency_code, value, insurance, description,
+#    harmonized_code, fda_notice, terms, packaging, service_type, comments
+
+file: /home/aochoa/apps/fullman/tests/input/test.csv
+headers: false
+emails:
+  aams: it@ibcinc.com
+  success: ajozz13@gmail.com,me@me.com
+  failure: ajozz13@gmail.com
+manifest:
+  defaults:
+    origin: "NYC"
+    flight: "AA123"
+    destination: "NYC"
+    id: "180234642211-A"
+    date: "20161012"
+    master: "180234642211"
+shipper:
+  reference: 1
+  name: 10
+  address1: 11
+  address2: 12
+  city: 13
+  state: 14
+  zip: 15
+  country: 16
+  phone: 17
+consignee:
+  name: 18
+  company: 19
+  address1: 20
+  address2: 21
+  city: 22
+  state: 23
+  zip: 24
+  country: 25
+  phone: 26
+shipment:  # The items shown here are the minimum that should be provided by all
+  defaults:
+    origin: "LHR"
+    weight_unit: "P"
+    terms: "P"
+    service_type: "ST"
+  weight: 4
+  value: 7
+  hawb: 0
+  destination: 2
+  pieces: 3
+  contents: 6
+  description: 8
+  packaging: 9
