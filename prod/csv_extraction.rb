@@ -117,7 +117,7 @@ begin
     email.from = 'nobody+aams_manifest@ibcinc.com'
     email.to = emails[ 'aams' ]
     email.subject = 'IBC Manifest'
-    email.message = msg
+    email.message = "#{ msg }#{ sl }"
     email.send_message
 
   elsif $http_submit
