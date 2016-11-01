@@ -18,7 +18,7 @@ begin
   cust = Customer.new
   cust.name = "Alberto"
   cust.company = "IBC"
-  cust.address1 = "11565 Western Drive"
+  cust.address1 = "11565 Western Drive, #4"
   cust.address2 = "Apt B16"
   cust.city = "Ft Lauderdale"
   cust.state = "FL"
@@ -26,7 +26,7 @@ begin
   cust.country = "US"
   cust.phone = "786 547 1335"
 
-  item = Shipment.new 
+  item = Shipment.new
   item.hawb = "32323423423"
   item.vendor_reference = "604946479985656"
   item.origin = "USA"
