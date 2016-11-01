@@ -69,19 +69,20 @@ class ShipmentLine
     @shipment = smnt
   end
 
+  def enclose input
+     [ input ].to_csv.strip
+  end
+
   def to_s
     #forces value to the ceil
     #We will only produce type = 12
-    unless @shipment.description.nil?
-      @shipment.description = "\"#{@shipment.description}\"" if @shipment.description.include? ","
-    end
     str = "12,,#{ @shipment.hawb },#{ @shipper.reference },#{ @shipment.second_shipper_reference },#{ @shipment.vendor_reference }"
     str = "#{str},#{ shipment.origin },#{ @shipment.destination },,#{ @shipment.service_provider },,"
     str = "#{str},#{ @shipment.pieces },#{ @shipment.weight },#{ @shipment.weight_unit },#{ @shipment.contents }"
-    str = "#{str},#{ @shipment.currency_code },#{ @shipment.value.to_f.ceil },#{ @shipment.insurance },#{ @shipment.description }"
+    str = "#{str},#{ @shipment.currency_code },#{ @shipment.value.to_f.ceil },#{ @shipment.insurance },#{ enclose @shipment.description }"
     str = "#{str},#{ @shipment.harmonized_code },#{ @shipment.fda_notice },#{ @shipment.terms },#{ @shipment.packaging }"
     str = "#{str},#{ @shipment.service_type },,,#{ @shipper.account },,"
-    str = "#{str},#{ @shipper.strip },#{ @customer.strip },#{ @shipment.comments }"
+    str = "#{str},#{ @shipper.strip },#{ @customer.strip },#{ enclose @shipment.comments }"
   end
 end
 
