@@ -3,6 +3,7 @@
   The documentation is available here
   http://www.pactrak.com/manifest-to-pactrak.html
 =end
+require 'csv'
 
 #Detail Shipment Records
 class Customer
@@ -14,6 +15,10 @@ class Customer
     @type = is_shipper
   end
 
+  def strip
+    self.to_s.strip
+  end
+
   def to_s
     max = @type ? 25:35
     if @address1.length > max
@@ -22,11 +27,12 @@ class Customer
         @address1 = @address1[ 0, max ]
       end
     end
-    str = "#{ @name }"
-    str = "#{str},#{ @company }" unless @type
-    str = "#{str},#{ @address1 },#{ @address2 },#{ @city },#{ @state },#{ @zip },#{ @country },#{ @phone }"
-    str = "#{str},#{ @email },#{ @tax_id }" unless @type
-    return str
+
+    str = [ @name ]
+    str << @company unless @type
+    str << @address1 << @address2 << @city << @state << @zip << @country << @phone
+    str << @email << @tax_id unless @type
+    return str.to_csv
   end
 end
 
@@ -66,13 +72,14 @@ class ShipmentLine
   def to_s
     #forces value to the ceil
     #We will only produce type = 12
+    @shipment.description = "\"#{@shipment.description}\"" if @shipment.description.include? ","
     str = "12,,#{ @shipment.hawb },#{ @shipper.reference },#{ @shipment.second_shipper_reference },#{ @shipment.vendor_reference }"
     str = "#{str},#{ shipment.origin },#{ @shipment.destination },,#{ @shipment.service_provider },,"
     str = "#{str},#{ @shipment.pieces },#{ @shipment.weight },#{ @shipment.weight_unit },#{ @shipment.contents }"
     str = "#{str},#{ @shipment.currency_code },#{ @shipment.value.to_f.ceil },#{ @shipment.insurance },#{ @shipment.description }"
     str = "#{str},#{ @shipment.harmonized_code },#{ @shipment.fda_notice },#{ @shipment.terms },#{ @shipment.packaging }"
     str = "#{str},#{ @shipment.service_type },,,#{ @shipper.account },,"
-    str = "#{str},#{ @shipper },#{ @customer },#{ @shipment.comments }"
+    str = "#{str},#{ @shipper.strip },#{ @customer.strip },#{ @shipment.comments }"
   end
 end
 
@@ -100,6 +107,6 @@ class Manifest
   attr_accessor :id, :date, :origin, :destination, :flight, :master
 
   def to_s
-    str = "1,#{ @id },#{ @date },#{ @origin },#{ @destination },#{ @flight },#{ @master }"
+    [ 1, @id, @date, @origin, @destination, @flight, @master ].to_csv
   end
 end
