@@ -26,7 +26,7 @@
 #    weight, weight_unit, contents, currency_code, value, insurance, description,
 #    harmonized_code, fda_notice, terms, packaging, service_type, comments
 
-file: /home/aochoa/Desktop/fullman/tests/input/test.csv
+file: $HOME/Desktop/fullman/tests/input/test.csv
 headers: false
 emails:
   aams: it@ibcinc.com
