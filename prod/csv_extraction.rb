@@ -42,6 +42,11 @@ def set_items object, conf, data
 
 end
 
+def expand input
+        exp = Gem.win_platform? ? /%([a-zA-Z_]+[a-zA-Z0-9_]*)%/ : /\$([a-zA-Z_]+[a-zA-Z0-9_]*)|\$\{(.+)\}/
+        input.gsub(exp) { ENV[$1] }
+end
+
 exit_code = 0
 
 if ARGV[0] == "-h"
@@ -68,10 +73,11 @@ begin
   #cons_conf = props[ "consignee" ]
   #shpr_conf = props[ "shipper" ]
   #ship_conf = props[ "shipment" ]
+   
+  csv_input = expand props['file']
+  puts "CSV input file Path: #{ csv_input }" if $debug
 
-  puts "CSV input file Path: #{ props['file'] }" if $debug
-
-  file = CSV.open( props['file'] , { :headers => props['headers'] } )
+  file = CSV.open( csv_input, { :headers => props['headers'] } )
   $output = Array.new
   $shipment_lines = Array.new
 
