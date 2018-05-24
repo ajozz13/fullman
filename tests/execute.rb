@@ -1,4 +1,4 @@
-#!/usr/bin/env jruby
+#!/usr/bin/env ruby
 =begin
   This is an execution test for fullman.rb
 =end
@@ -27,7 +27,7 @@ begin
   cust.phone = "786 547 1335"
 
   item = Shipment.new
-  item.hawb = "32323423423"
+  item.hawb = "DE32323423423"
   item.vendor_reference = "604946479985656"
   item.origin = "USA"
   item.destination = "USG"
