@@ -40,17 +40,18 @@ class Shipment
   attr_accessor :vendor_reference, :origin, :destination, :service_provider, :pieces,
     :weight, :weight_unit, :contents, :currency_code, :value, :insurance, :description,
     :harmonized_code, :fda_notice, :terms, :packaging, :service_type, :comments,
-    :hawb, :second_shipper_reference
-
+    :hawb, :internal_reference
+=begin
   def hawb= main_trak
     main_trak = main_trak.gsub(/\D/, "")
     if main_trak.length > 11
       @hawb = main_trak[main_trak.length-11, main_trak.length]
-      @second_shipper_reference = main_trak
+      @internal_reference = main_trak
     else
       @hawb = main_trak
     end
   end
+=end
 
   def to_s
     self.instance_variables.each do |name|
@@ -76,7 +77,7 @@ class ShipmentLine
   def to_s
     #forces value to the ceil
     #We will only produce type = 12
-    str = "12,,#{ @shipment.hawb },#{ @shipper.reference },#{ @shipment.second_shipper_reference },#{ @shipment.vendor_reference }"
+    str = "12,,#{ @shipment.hawb },#{ @shipper.reference },#{ @shipment.internal_reference },#{ @shipment.vendor_reference }"
     str = "#{str},#{ shipment.origin },#{ @shipment.destination },,#{ @shipment.service_provider },,"
     str = "#{str},#{ @shipment.pieces },#{ @shipment.weight },#{ @shipment.weight_unit },#{ @shipment.contents }"
     str = "#{str},#{ @shipment.currency_code },#{ @shipment.value.to_f.ceil },#{ @shipment.insurance },#{ enclose @shipment.description }"
