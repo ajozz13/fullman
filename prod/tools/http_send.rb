@@ -10,6 +10,7 @@ $debug
 
 class HTTPSender
   attr_accessor :url, :method, :content, :headers #hash of headers
+  attr_reader  :response, :response_code, :response_message, :response_json
 
   def initialize dbg=false
     $debug = dbg
@@ -53,32 +54,35 @@ class HTTPSender
         puts request.body
       end
       puts "Connecting to...#{ uri.request_uri }..."
-      response = http.request( request )
-      puts "Done.\n#{ response.inspect }"  if $debug
-      puts "The service responded: ( #{ response.code } - #{ response.message } )"
+      @response = http.request( request )
+      puts "Done.\n#{ @response.inspect }"  if $debug
+      @response_code = @response.code
+      @response_message = @response.message
+      puts "The service responded: ( #{ @response_code } - #{ @response_message } )"
 
       if $debug
         puts
         puts "Headers Received:"
         #puts "#{ response.to_hash.inspect }"
-        response.each_header do |key, value|
+        @response.each_header do |key, value|
                 puts "#{ key }: #{ value }"
         end
         puts "-----------------------------"
       end
 
-      puts
-      puts "CL: #{ response[ "content-length" ] }" if $debug
-      puts "----BODY----"
-      puts response.body
-      puts "------------"
+      if $debug
+              puts "CL: #{ @response[ "content-length" ] }"
+              puts "----BODY----"
+              puts @response.body
+              puts "------------"
+      end
 
-      resp = JSON.parse(response.body, object_class: OpenStruct)
+      @response_json = JSON.parse( @response.body, object_class: OpenStruct )
       #code = resp["code"].to_i
-      code = resp.code.to_i
-      puts code
+      #code = resp.code.to_i
+      #puts @response_code.to_i
       #puts resp["message"]
-      puts resp.message
+      #puts @response_message
 
     rescue Exception => exception
       STDERR.write "Exception: #{ exception }\n"
