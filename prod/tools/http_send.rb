@@ -2,6 +2,7 @@
 
 require "net/http"
 require "net/https"
+require 'multipart_body'
 require "uri"
 require 'json'
 require 'ostruct'
@@ -20,7 +21,21 @@ class HTTPSender
     ENV[ 'http_proxy' ] = proxy_address
   end
 
-  def execute
+  def setup_file_body file
+          file_part = ""
+          File.open( file, 'rb' ) do |f|
+                  file_part = Part.new :name => 'File', :body => f,
+                       :filename => file,
+                       :content_type => 'text/plain'
+          end
+          boundary = "---------------------------#{rand(10000000000000000000)}"
+          body =  MultipartBody.new [file_part], boundary
+          @headers = { "Content-Type" => "multipart/form-data; boundary=#{boundary}" }
+          body.to_s
+  end
+
+  def execute file_path=nil
+    file_upload = !file_path.nil?
     begin
       uri = URI.parse @url
       print "Set up Connection....." if $debug
@@ -41,11 +56,15 @@ class HTTPSender
           puts "DELETE Method...."
           Net::HTTP::Delete.new( uri.request_uri )
       end
+
+      request.body = file_upload ? setup_file_body( file_path ) : @content.to_s
+
       puts "set headers....."
-      @headers.each do |k, v|
-        request.add_field(k, v)
+      if @headers
+              @headers.each do |k, v|
+                      request.add_field(k, v)
+              end
       end
-      request.body = @content.to_s  #must be sent as string.
 
       if $debug
         puts "request and body"
@@ -56,7 +75,7 @@ class HTTPSender
       puts "Connecting to...#{ uri.request_uri }..."
       @response = http.request( request )
       puts "Done.\n#{ @response.inspect }"  if $debug
-      @response_code = @response.code
+      @response_code = @response.code.to_i
       @response_message = @response.message
       puts "The service responded: ( #{ @response_code } - #{ @response_message } )"
 
